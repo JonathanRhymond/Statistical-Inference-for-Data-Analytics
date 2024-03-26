@@ -1,0 +1,234 @@
+---
+title: "lab04_rhymond.1"
+author: "rhymond.1"
+date: "2024-02-19"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NULL,
+  fig.width = 5,
+  fig.height = 4,
+  set.seed(3202)
+)
+
+```
+
+**Problem 1**
+
+**part a**
+
+$L(\mu , \sigma^2 ; x_1, ... , x_n$ = $\prod_{i=1}^{n}f(x_i;\mu,\sigma^2)$ = $\prod_{i=1}^{n}\frac{1}{\sigma\sqrt{2\pi}}exp\{\frac{(x_i-\mu)^2}{2\sigma^2}\}$ = $(2\pi\sigma^2)^\frac{-n}{2}exp\{\frac{\sum_{i=1}^{n}(x_i-\mu)^2}{2\sigma^2}\}$ = $(2\pi)^\frac{-n}{2}exp\{\frac{\sum_{i=1}^{n}(x_i-\mu)^2}{2}\}$ (because $\sigma^2$ = 1)
+
+**part b**
+
+```{r}
+L_Normal <- function(data, mu) {
+  n <- length(data)
+  L <- sqrt(2 * pi * 1 ^ 2) ^ (-n / 2) * exp(-.5 * sum((data - mu) ^ 2))
+  return(L)
+}
+```
+
+**part c**
+
+```{r}
+frogs <- c(4.57, 4.73, 2.24, 4.16, 4.53, 3.79, 2.48, 4.74, 3.18)
+(xbar <- mean(frogs))
+```
+
+**part d**
+
+```{r}
+mu_domain <- seq(from = 0, to = 7, by = .05)
+Likelihood_values = sapply(mu_domain, L_Normal, data = frogs)
+plot(
+  mu_domain,
+  Likelihood_values,
+  xlab = "mu",
+  ylab = "L(mu|X,sigma)",
+  main = "Normal Likelihood of Frog Weights",
+  type = "l",
+  lwd = 2
+)
+```
+
+**part e**
+
+```{r}
+mu_hat = mu_domain[which.max(sapply(mu_domain, L_Normal, data = frogs))]
+print(mu_hat)
+
+Normal_MLE <- function(mu) {
+  sapply(mu, L_Normal, data = frogs)
+}
+optimize(f = Normal_MLE,
+         interval = c(0, 7),
+         maximum = TRUE)
+```
+
+**part f**
+
+Maximum is the maximum value in the graph. It is the mode value for mu. Objective is the value from the optimize function.
+
+**part g**
+
+```{r}
+logL_Normal <- function(data, mu) {
+  Log_L = log(L_Normal(data, mu))
+  return(Log_L)
+}
+
+Log_Likelihood_values = sapply(mu_domain, logL_Normal, data = frogs)
+
+plot(
+  mu_domain,
+  Log_Likelihood_values,
+  xlab = "mu",
+  ylab = "logL(mu|X,sigma)",
+  main = "Normal Log-Likelihood of Frog Weights",
+  type = "l",
+  lwd = 2
+)
+```
+
+**part h**
+
+```{r}
+logNormal_MLE <- function(mu) {
+  sapply(mu, logL_Normal, data = frogs)
+}
+optimize(f = Normal_MLE,
+         interval = c(0, 7),
+         maximum = TRUE)
+```
+
+**part i**
+
+Log is monotonically increasing, therefore the max of both the likelihood and log-likelihood would be in the same place.
+
+**Problem 2**
+
+**part a**
+
+$\prod_{i=1}^{n}f(x;\lambda)$ = $\prod_{i=1}^{n}\lambda e^{-\lambda x}$ = $(\lambda^n)(e^{-\lambda n})(e^{\sum_{i=1}^{n}x})$
+
+**part b**
+
+```{r}
+L_Exponential <- function(data, lambda) {
+  n <- length(data)
+  L <- (lambda^n)*(exp(-lambda*n))*(exp(sum(data)))
+  return(L)
+}
+```
+
+**part c**
+
+```{r}
+metal <- c(0.51, 0.02, 0.15, 0.46, 0.11, 0.04, 0.39,0.52, 0.2, 0.17, 0.01, 0.02, 0.32, 1.37)
+(xbar <- mean(metal))
+```
+
+**part d**
+
+```{r}
+lambda_domain <- seq(from = 0, to = 10, by = .05)
+Likelihood_values = sapply(lambda_domain, L_Exponential, data = metal)
+plot(
+  lambda_domain,
+  Likelihood_values,
+  xlab = "lambda",
+  ylab = "L(lambda|X)",
+  main = "Normal Likelihood of Metal Concentrations",
+  type = "l",
+  lwd = 2
+)
+```
+It appears to be skewed right but its maximum seems to be around 1.
+
+**part e**
+
+```{r}
+Normal_MLE <- function(lambda) {
+  sapply(lambda, L_Exponential, data = metal)
+}
+optimize(f = Normal_MLE,
+         interval = c(0, 10),
+         maximum = TRUE)
+```
+
+**part f**
+
+```{r}
+logL_Exponential <- function(data, lambda) {
+  Log_L = log(L_Exponential(data, lambda))
+  return(Log_L)
+}
+
+Log_Likelihood_values = sapply(lambda_domain, logL_Exponential, data = metal)
+
+plot(
+  lambda_domain,
+  Log_Likelihood_values,
+  xlab = "mu",
+  ylab = "logL(mu|X,sigma)",
+  main = "Normal Log-Likelihood of Frog Weights",
+  type = "l",
+  lwd = 2
+)
+```
+The max seems to be around 1 like in the non-log graph.
+'
+
+**Problem 3**
+
+```{r}
+height <- c("Safe", "Safe", "Safe", "Safe", "Safe", "Safe", "Safe", "Safe", "Safe", "Flood", "Safe", "Safe", "Safe", "Flood", "Safe", "Safe", "Flood", "Flood", "Safe", "Safe", "Flood", "Safe", "Safe", "Safe", "Safe", "Safe", "Safe", "Safe", "Flood", "Safe")
+height_numeric <- ifelse(height == "Safe", 0, 1)
+
+L_Poisson <- function(data, lambda) {
+  n <- length(data)
+  L <- ((lambda^sum(data))*(exp(-lambda*n)))/(prod(factorial(data)))
+  return(L)
+}
+
+lambda_domain <- seq(from = 0, to = 1, by = .05)
+Likelihood_values = sapply(lambda_domain, L_Poisson, data = height_numeric)
+plot(
+  lambda_domain,
+  Likelihood_values,
+  xlab = "lambda",
+  ylab = "L(lambda|X)",
+  main = "Normal Likelihood of Metal Concentrations",
+  type = "l",
+  lwd = 2
+)
+
+Normal_MLE <- function(lambda) {
+  sapply(lambda, L_Poisson, data = height_numeric)
+}
+optimize(f = Normal_MLE,
+         interval = c(0, 1),
+         maximum = TRUE)
+
+logL_Poisson <- function(data, lambda) {
+  Log_L = log(L_Poisson(data, lambda))
+  return(Log_L)
+}
+
+Log_Likelihood_values = sapply(lambda_domain, logL_Poisson, data = metal)
+
+plot(
+  lambda_domain,
+  Log_Likelihood_values,
+  xlab = "mu",
+  ylab = "logL(mu|X,sigma)",
+  main = "Normal Log-Likelihood of Frog Weights",
+  type = "l",
+  lwd = 2
+)
+```
+

@@ -1,0 +1,119 @@
+---
+title: "Stat 3202: Homework 3"
+date: "Due Saturday, February 10 by 11:59 pm"
+author: "Jonathan Rhymond (rhymond.1)"
+output: pdf_document
+---
+
+\
+
+
+
+\large
+\
+
+#### Instructions
+- Replace "FirstName LastName (name.n)" above with your information.
+- Provide your solutions below in the spaces marked "Solution:".
+- Include any R code that you use to answer the questions; if a numeric answer is required, show how you calculated it in R.
+- Knit this document to **pdf** and upload both the **pfd** file and your completed **Rmd** file to Carmen
+- Make sure your solutions are clean and easy-to-read by
+    - formatting all plots to be appropriately sized, with appropriate axis labels.
+    - only including R code that is necessary to answer the questions below.
+    - only including R output that is necessary to answer the questions below (avoiding lengthy output).
+    - providing short written answers explaining your work, and writing in complete sentences.
+
+
+Due on Carmen Saturday, February 10 by 11:59 pm. All uploads must be .pdf.
+Submissions will be accepted for 24 hours past this deadline, with a deduction of 1%
+per hour. Absolutely no submissions will be accepted after this grace period.
+\
+
+**Concepts \& Application**
+
+In this assignment, you will
+
+* find consistent estimators of several probability distributions.
+* find likelihood functions of several probability distributions.
+
+
+
+This homework is worth 40 points. 
+
+
+
+
+
+\newpage
+
+**Question 1**
+
+Consider two samples $X_1,X_2,\cdots,X_{n_x} \stackrel{\mathrm{iid}}{\sim}f_x$ with $E(X)=\mu_x$ and finite $V(X)=\sigma^2_x$, and $Y_1,Y_2,\cdots,Y_{n_y} \stackrel{\mathrm{iid}}{\sim}f_y$ with $E(Y)=\mu_y$ and finite $V(Y)=\sigma^2_y$.
+
+Assuming that the two samples are independent, show that $\bar{X}-\bar{Y}$ is consistent estimator for $\mu_x-\mu_y$.
+
+
+
+
+\
+
+**Solution to Question 1**
+
+Your answers go here.
+
+In order to prove $\bar{X}-\bar{Y}$ is an unbiased estimator we need to prove $E(\bar{X}-\bar{Y})$ = $\mu_x-\mu_y$. Because X and Y are independent we can also state that $E(\bar{X}-\bar{Y})$ = $E(\bar{X})-E(\bar{Y})$. Then all we have to do is use the information given in the problem to replace $E(\bar{X})$ and  $E(\bar{Y})$. This gives us $\mu_x-\mu_y$, which proves it is an unbiased estimator.
+
+
+\vspace{1cm}
+
+**Question 2**
+
+
+
+Consider a sample $X_1,X_2,\cdots,X_n\stackrel{\mathrm{iid}}{\sim}Unif(\theta, \theta+1)$. Let  $\hat{\theta}=\bar{X}-\frac{1}{2}$ be an estimator for $\theta$. 
+
+Show that $\hat{\theta}$ is consistent estimator for $\theta$. You may use known facts about $E(X),E(\bar{X}),V(X),V(\bar{X})$.
+
+\
+
+**Solution to Question 2**
+
+Your answers go here.
+
+Similar to in question 1, we want to prove that $E(\hat{\theta}) = E(\bar{X}-\frac{1}{2})$ = $\theta$. We know that \(E(\bar{x}) = \frac{1}{n} \sum_{i=1}^{n} E(X_i)\). Since we are using a uniform distribution we know that we can rewrite $E(X_i)$ as $\frac{\theta + (\theta+1)}{2} = \theta + \frac{1}{2}$. Taking this and combining it with the $-\frac{1}{2}$ we can simplify down to $\theta + \frac{1}{2}-\frac{1}{2} = \theta$. This proves that it is an unbiased estimator.
+
+
+
+
+\vspace{1cm}
+
+**Question 3**
+
+
+(a) Let $X_1,X_2,\cdots,X_n\stackrel{\mathrm{iid}}{\sim}Gamma(\alpha, \beta)$, find the likelihood function.
+(b) Let $X_1,X_2,\cdots,X_n\stackrel{\mathrm{iid}}{\sim}\chi^2_k$, Find the likelihood function.
+
+
+
+
+\
+
+**Solution to Question 3**
+
+Your answers go here.
+
+**Part a:**
+
+We already did the simplification math in class for the gamma distribution so I will skip ahead to that point
+\[L(\alpha, \beta \mid x_1, x_2, \ldots, x_n) = \prod_{i=1}^{n}\frac{\beta^\alpha}{\Gamma(\alpha)} x_i^{\alpha - 1} e^{-\beta x_i} = (\frac{\beta^\alpha}{\Gamma(\alpha)})^n(\prod_{i=1}^{n}x_i^{\alpha-1})(e^{-\beta\sum_{i=1}^{n}x_i})\]
+
+**Part b:**
+
+Similarly to above we just follow the required steps for likelihood.
+\[L(k \mid x_1, x_2, \ldots, x_n) = \prod_{i=1}^{n} \frac{1}{2^{k/2}\Gamma(k/2)} x_i^{k/2 - 1} e^{-x_i/2}\]
+
+
+
+
+\vspace{1cm}
+

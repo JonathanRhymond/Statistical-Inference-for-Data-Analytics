@@ -1,0 +1,117 @@
+---
+title: "lab07_rhymond.1"
+author: "rhymond.1"
+date: "2024-03-23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NULL,
+  fig.width = 5,
+  fig.height = 4,
+  set.seed(3202)
+)
+
+```
+
+**Problem 1**
+
+**part a**
+
+Done
+
+**part b**
+
+```{r}
+mu <- 10
+sigma <- 3
+n <- 5
+alpha <- .01
+NMC <- 10000
+coverage <- c()
+for (i in 1:NMC) {
+  x <- rnorm(n, mu, sigma)
+  xbar <- mean(x)
+  s <- sd(x)
+  LL <- xbar - qt(1 - alpha / 2, n - 1) * s / sqrt(n)
+  UL <- xbar + qt(1 - alpha / 2, n - 1) * s / sqrt(n)
+  coverage[i] <- LL < mu & UL > mu
+}
+mean(coverage)
+```
+
+
+**part c**
+
+```{r}
+mu <- 10
+sigma <- 3
+n <- 50
+alpha <- .01
+NMC <- 10000
+coverage <- c()
+for (i in 1:NMC) {
+  x <- rnorm(n, mu, sigma)
+  out <- t.test(x, conf.level = 1 - alpha)
+  coverage[i] <- out$conf.int[1] < mu & out$conf.int[2] > mu
+}
+mean(coverage)
+```
+
+
+**part d**
+
+```{r}
+comp.cvrg <- function(mu, sgm, n, alp) {
+  coverage <- c()
+  for (i in 1:2e3) {
+    x <- rnorm(n, mu, sgm)
+    out <- t.test(x, conf.level = 1 - alp)
+    coverage[i] <- out$conf.int[1] < mu & out$conf.int[2] > mu
+  }
+  mean(coverage) # should be about 1-alpha
+}
+comp.cvrg <- Vectorize(comp.cvrg, 'alp')
+comp.cvrg(mu = 10,
+          sgm = 3,
+          n = 100,
+          alp = 0.01)
+
+n.grid <- floor(seq(100, 1000, length.out = 2e1))
+alp.grid <- seq(1e-3, 5e-1, length.out = 2e1)
+contour(x = n.grid,
+        y = alp.grid,
+        z = outer(n.grid, alp.grid,
+                  function(x, y) {
+                    comp.cvrg(mu = 10,
+                              sgm = 3,
+                              n = x,
+                              alp = y)
+                  }))
+```
+
+
+
+**Problem 2**
+
+**part a**
+
+```{r}
+library(DescTools)
+
+n <- 40
+p <- 0.70
+NMC <- 10000
+
+# Generate samples using rbinom
+successes <- rbinom(NMC, n, p)
+
+# Compute confidence intervals using BinomCI for the Wald method
+wald_intervals <- BinomCI(successes, n, conf.level = 0.95, method = "wald")
+
+# Check coverage
+mean(wald_intervals[, 1] <= p) + mean(wald_intervals[, 2] >= p)
+```
+

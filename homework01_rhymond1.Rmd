@@ -1,0 +1,370 @@
+---
+title: "Stat 3202: Homework 1"
+date: Due Tuesday, January 23 by 11:59 pm"
+author: "Jonathan Rhymond (rhymond.1)"
+output: pdf_document
+---
+
+\
+
+Setup:
+```{r message=FALSE}
+library(tidyverse)
+library(readr)
+set.seed(3202)
+```
+
+\
+
+#### Instructions
+- Replace "FirstName LastName (name.n)" above with your information.
+- Provide your solutions below in the spaces marked "Solution:".
+- Include any R code that you use to answer the questions; if a numeric answer is required, show how you calculated it in R.
+- Knit this document to **pdf** and upload both the **pfd** file and your completed **Rmd** file to Carmen
+- Make sure your solutions are clean and easy-to-read by
+    - formatting all plots to be appropriately sized, with appropriate axis labels.
+    - only including R code that is necessary to answer the questions below.
+    - only including R output that is necessary to answer the questions below (avoiding lengthy output).
+    - providing short written answers explaining your work, and writing in complete sentences.
+
+
+All uploads must be .pdf.
+Submissions will be accepted for 24 hours past this deadline, with a deduction of 1%
+per hour. Absolutely no submissions will be accepted after this grace period.
+\
+
+**Concepts \& Application**
+
+In this assignment, you will
+
+* identify the mean and variance functions of of several probability distributions.
+* find expectation and variances of several probability distributions.
+* simulate random numbers i R.
+* learn many possible estimators for a parameter.
+* find the mean and variance linear combination of random variables.
+
+
+
+**Question 1**
+
+Toss a balanced coin. Let's define a random variable $X$ such that $X=1$ if a heads is observed and $X=0$ otherwise. Find the following:
+
+(a) $E(X)$.
+(b)	$E(-2X+1)$.
+(c) $V(X)$.
+(d)	$V(-2X+9)$.
+(e) $V(3X+10)$. 
+
+
+
+\
+
+**Solution to Question 1**
+
+Your answers go here.
+
+**Part a:**
+```{r}
+p1 <- 0.5
+E_X1 <- p1
+print(paste("E(X):", E_X1))
+```
+We use the fact that the expectation of a Bernoulli variable is p, which we proved in class. We also know that for a balanced coin p would b 0.5.
+
+**Part b:**
+```{r}
+E_minus_2X_plus_1 <- -2 * E_X1 + 1
+print(paste("E(-2X+1):", E_minus_2X_plus_1))
+```
+We use the fact that for expectation we can split the addition as E(2X) + E(1), then we use the fact that the E(1) = 1 and we can further make the E(2X) to 2E(X).
+
+**Part c:**
+```{r}
+Var_X1 <- p1 * (1 - p1)
+print(paste("V(X):", Var_X1))
+```
+We use known fact that variance can be computed as p(1-p) for Bernoulli variables.
+
+**Part d:**
+```{r}
+Var_minus_2X1_plus_9 <- (-2)^2 * Var_X1
+print(paste("V(-2X+9):", Var_minus_2X1_plus_9))
+```
+We use the fact that for variance we can split the addition as Var(-2X) + Var(9), then we use the fact that the Var(9) = 0 and we can further make the Var(-2X) to -2^(2)*Var(X) taking care to square the coefficient.
+
+**Part e:**
+```{r}
+Var_3X1_plus_10 <- 3^2 * Var_X1
+print(paste("V(3X+10):", Var_3X1_plus_10))
+```
+We use the fact that for variance we can split the addition as Var(3X) + Var(10), then we use the fact that the Var(10) = 0 and we can further make the Var(3X) to 3^(2)*Var(X) taking care to square the coefficient.
+
+
+
+**Question 2**
+
+In a day, the number of gallons of blood donation received at a local hospital, denoted by $X$, has the probability mass function (pmf) $f(x)$ as below.
+
+|  $x$    | 0    |  1   |  2   |  3   |
+|---------|------|------|------|------|
+|  $f(x)$ | 0.1  |  0.4 |  0.3 |  0.2 |
+
+(a) Find the expectation of $X$, $E(X)$.
+(b)	Find the variance and standard deviation of $X$, $V(X)$.
+(c) If the set-up cost (in hundreds of dollars) for blood donation received denoted by a random variable $C$ is given by 
+$C=10+8X+X^2$, what is the expected (average) set-up cost for a day? 
+
+
+\
+
+**Solution to Question 2**
+
+Your answers go here.
+
+**Part a:**
+```{r}
+values2 <- c(0, 1, 2, 3)
+p2s <- c(0.1, 0.4, 0.3, 0.2)
+
+E_X2 <- sum(values2 * p2s)
+print(paste("E(X):", E_X2))
+```
+We calculate the expectation by multiplying each value from the pmf by its probability from the pmf which is the process for expectation of a pmf.
+
+**Part b:**
+```{r}
+E_X2_squared <- sum(values2^2 * p2s)
+Var_X2 <- E_X2_squared - (E_X2)^2
+print(paste("V(X):", Var_X2))
+
+SD_X2 = sqrt(Var_X2)
+print(paste("SD(X):", SD_X2))
+```
+First we get the expecation of x^2, which is the exact sample process as in part a, with the values squared. Variance is then calculated by E(X^2) - (E(X))^2. For Standard deviation we just square variance.
+
+**Part c:**
+```{r}
+E_Cost <- sum((10+8*(values2) + (values2)^2)*p2s)
+print(paste("Expected Cost:", E_Cost))
+```
+We just calculate expectation as in part a, but in this case we replace the base values by the values through the given cost function.
+
+
+
+**Question 3**
+
+A fair six-sided die is rolled. The faces are numbered 1-6. Let $X$ represent the roll of a die.
+
+(a) Write the PMF, $P(X)$. Please list each outcome and its corresponding probability.
+(b) Compute the population parameters $\mu =E(X)$ and $\sigma^2= V(X)$. 
+(c) Simulate 100 rolls of a die with the function `sample()`. 
+
+*Hint* The sample function may be used as follows: `sample(c(1:6),100,replace=TRUE)`
+
+(d) Using your sample of 100 rolls, estimate $\mu$ with the statistics 
+
+    (i) $\hat{\mu_1}=\bar{x}$
+    (ii) $\hat{\mu_2}=\frac{x_{max}+x_{min}}{2}$
+    (iii) $\hat{\mu_3}=x^{0.5}$ (the median)
+    (iv) $\hat{\mu_4}=x_{mode}$ Hint:In R, the mode of a vector can be calculated using the Mode() function in the DescTools package.
+    
+    Which do you think is the best estimator for $\mu$?
+
+(e) Using your sample of 100 rolls, estimate $\sigma^2$ with $s^2$, the sample variance.
+
+(f) Now simulate 1,000,000 rolls and compute the sample mean (let's assume the sample mean would be best estimator for $\mu$) and sample variance of
+those rolls. How close are they to the true parameters, $\mu$ and $\sigma^2$? 
+
+
+\
+
+**Solution to Question 3**
+
+Your answers go here.
+
+**Part a:**
+```{r}
+values3 <- c(1:6)
+p3s <- c(1/6, 1/6, 1/6, 1/6, 1/6, 1/6)
+data.frame(x = values3, P_X = p3s)
+```
+Given that the dice is fair, we know each value 1 through 6 will have an equal probability of 1/6.
+
+**Part b:**
+```{r}
+mu <- mean(values3)
+print(paste("mu:", mu))
+sigma_squared <- var(values3)
+print(paste("sigma^2:", sigma_squared))
+```
+We know that mu is also equal to the mean of the values, and sigma^2 is equal to the variance.
+
+**Part c:**
+```{r}
+simulated_values <- sample(values3,100,replace=TRUE)
+```
+Just using the given sample function from above, but replacing c(1:6) with our already created collection called values3.
+
+**Part d:**
+```{r}
+x_bar <- mean(simulated_values)  # (i) Sample mean
+print(paste("mean:", x_bar))
+x_mid <- (max(simulated_values) + min(simulated_values)) / 2  # (ii) Midrange
+print(paste("midrange:", x_mid))
+x_median <- median(simulated_values)  # (iii) Median
+print(paste("median:", x_median))
+x_mode <- DescTools::Mode(simulated_values)  # (iv) Mode
+print(paste("mode:", x_mode))
+```
+We used the given functions to calculated the mean, midrange, median, and mode. Occasionally replacing with given r functions when available.
+
+**Part e:**
+```{r}
+simulated_variance <- var(simulated_values)
+print(paste("var:", simulated_variance))
+```
+We just use Rs variance function on the simulated values here.
+
+**Part f:**
+```{r}
+simulated_values_large <- sample(values3,1000000,replace=TRUE)
+large_mean <- mean(simulated_values_large)
+print(paste("large mean:", large_mean))
+large_var <- var(simulated_values_large)
+print(paste("large variance:", large_var))
+```
+Same process as in part c for the simulation, then we just calculate the mean and var with the given r functions.
+
+
+
+**Question 4**
+
+
+Let's consider a continuous uniform distribution as defined below.
+
+*Definition:* Let $X$ be a random variable with $a,b$, real values such that $a<b$. A random variable $X$ can be gives as a continuous uniform distribution on the interval $(a,b)$, denoted by $X \sim U(a,b)$, if and only if its probability density function is $f(x)=\frac{1}{(b-a)}$,for any $x\in (a,b)$.
+
+Suppose a random variable $X$ for a particular situation is distributed as $X \sim U(\lambda,\lambda+10)$, where $\lambda$ is parameter to be estimated later.
+
+(i) Using calculus (as opposed the known properties of the uniform distribution), compute the first moment $E(X)$, the second moment $E(X^2)$ and the variance $V(X)$.
+(ii) Using known properties of the uniform distribution (that is, by using the formulas for expectation and variance of a uniform distribution), check that your answers to part (i)) for the expectation and variance are correct. 
+
+
+**Solution to Question 4**
+
+Your answers go here.
+
+**Part i:**
+
+a <- $\lambda$
+
+b <- $\lambda$ + 10
+
+\[E(X) = \int_{\lambda}^{\lambda+10} \frac{x}{(\lambda+10 - \lambda)}\]
+
+\[E(X^2) = \int_{\lambda}^{\lambda+10} \frac{x^2}{(\lambda+10 - \lambda)}\]
+
+\[V(X) = E(X^2) - [E(X)]^2 = \int_{\lambda}^{\lambda+10} \frac{x^2}{(\lambda+10 - \lambda)} \, dx - \left( \int_{\lambda}^{\lambda+10} \frac{x}{(\lambda+10 - \lambda)} \, dx \right)^2\]
+
+```{r}
+lambda <- 5
+
+a <- lambda
+b <- lambda + 10
+
+E_X4 <- integrate(function(x) x / (b - a), lower = a, upper = b)$value
+
+E_X4_squared <- integrate(function(x) x^2 / (b - a), lower = a, upper = b)$value
+
+Var_X4 <- E_X4_squared - E_X4^2
+
+print(paste("E(X):", E_X4))
+print(paste("E(X^2):", E_X4_squared))
+print(paste("V(X):", Var_X4))
+```
+First I printed the exact formula with lambda as a variable. But since lambda is an unknown, I've also made it a 5 here just to allow the code to compile and compare more easily in part 2. Otherwise the process is just the calculus required for expectation, expectation squared, and variance.
+
+**Part ii:**
+\[E(X) = \frac{\lambda + (\lambda + 10)}{2} = \frac{2\lambda + 10}{2} = \lambda + 5\]
+
+\[V(X) = \frac{(\lambda + 10 - \lambda)^2}{12} = \frac{10^2}{12} = \frac{100}{12}\]
+
+```{r}
+E_X4_known <- (a + b) / 2
+Var_X4_known <- (b - a)^2 / 12
+
+print(paste("E(x):", E_X4))
+print(paste("V(X):", Var_X4))
+```
+As we can see we get the same values when computing based on statistical knowledge of uniform distributions.
+
+
+
+\
+
+
+**Question 5**
+
+
+Child abduction occurring in a particular city can be attributed by a Poisson process. Suppose the average number of child abduction per week is 2. Let $X$ represent number of children abducted in a week, and let us assume that $X \sim Poisson(\lambda=2)$. A sample over 10 weeks collected the following abductions: {1,1,2,3,5,1,3,3,2,0}. Let us assume
+that abducted children are independent. 
+
+a) Using known properties of the Poisson distribution, what are the population mean and
+population variance of this distribution? No need for calculus, just use what you know
+about a Poisson random variable.
+
+b) Compute the sample mean $\bar{x}$ and the sample variance $s^2$. You may use the functions `mean()` and `var()` in `R` to calculate those values.
+
+c) Do $\bar{x}$ and $s^2$ seem to be good close estimates of the true parameter $\lambda$? Which is better,
+and what criterion did you use to define “better”? 
+
+**Solution to Question 5**
+
+Your answers go here.
+
+**Part a:**
+```{r}
+lambda <- 2
+
+print(paste("x bar:", lambda))
+print(paste("variance:", lambda))
+```
+We simply use the fact that the variance and mu for a Poisson distribution is simply lambda.
+
+**Part b:**
+```{r}
+sample5 <- c(1,1,2,3,5,1,3,3,2,0)
+
+sample_mean5 <- mean(sample5)
+print(paste("sample mean:", sample_mean5))
+sample_var5 <- var(sample5)
+print(paste("sample variance:", sample_var5))
+```
+
+
+**Part c:**
+All of the estimates were close to the true $\lambda$. I would recommend using x bar for no other reason than the simplicity of calculating it. 
+
+
+
+
+**Question 6**
+
+
+Consider a population with density $f(y\mid\beta)=\beta y^{\beta-1}$ for $0<y<1$ and $\beta>-1$.
+Compute the expectation and variance of this population. 
+
+\
+
+
+**Solution to Question 6**
+
+Your answers go here.
+
+**Expectation (mean):**
+\[ E(Y) = \int_{0}^{1} y \cdot \beta y^{\beta-1} \, dy = \frac{\beta}{\beta+1}\]
+
+**Variance:** 
+\[ \text{Var}(Y) = \int_{0}^{1} y^2 \cdot \beta y^{\beta-1} \, dy - (\frac{\beta}{\beta+1})^2 = \frac{-\beta^3 - \beta^2 + \beta}{(\beta+1)(\beta+2)}\]
+
+We just use the formulas for mean and variance while keeping them in terms of beta.

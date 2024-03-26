@@ -1,0 +1,188 @@
+---
+title: "Stat 3202 Spring 2022 Homework 5"
+date: "Due Saturday, March 9 by 11:59 pm"
+author: "Jonathan Rhymond"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NULL,
+  fig.width = 5,
+  fig.height = 4,
+  set.seed(3202)
+)
+```
+
+\large
+**Due on Carmen Saturday, March 9 before 11:59 pm. All uploads must be .pdf. Submissions will
+be accepted for 24 hours past this deadline, with a deduction of 1\% per hour. Absolutely no
+submissions will be accepted after this grace period.**
+
+Problems will be graded for a combination of correctness and completion.
+
+
+Academic Integrity
+
+Acceptable for this assignment:
+
+- Working together in a small group
+- Working together in a Zoom chat
+- Discussing or explaining your approach with students who have also already attempted a problem
+- Discussing the assignment with your TA or using MSLC tutoring resources
+- Asking me for help in class, office hours, or through Zoom
+
+Not acceptable for this assignment:
+
+- Copying answers from another student or letting another student copy your answers
+- Posting solutions to online or communal forums such as a group chat, Chegg, or Stack Exchange
+- Using solutions from any previous course or section of Stat 3202
+
+
+# Instructions
+- Replace "FirstName LastName (name.n)" above with your information.
+- Provide your solutions below in the spaces marked "Solution:".
+- Include any R code that you use to answer the questions; if a numeric answer is required, show how you calculated it in R.
+- Knit this document to **pdf** and upload both the **pfd** file and your completed **Rmd** file to Carmen
+- Make sure your solutions are clean and easy-to-read by
+    - formatting all plots to be appropriately sized, with appropriate axis labels.
+    - only including R code that is necessary to answer the questions below.
+    - only including R output that is necessary to answer the questions below (avoiding lengthy output).
+    - providing short written answers explaining your work, and writing in complete sentences.
+    
+Total: 40 points
+
+\newpage
+
+## **Question 1**
+
+The Columbus State Department of Ecology provides information on the mean lead contamination in parts per million (ppm) in trout in the Olentangy River basin. The date file `Trout.csv` contains a random sample of $n=100$ trout with their lead contamination in parts per million.  
+
+Please download the `Trout.csv` from Carmen and do the analysis for the following questions. 
+
+### a)
+
+Supposing the population standard deviation is known to be $\sigma=0.5$ ppm, and with a large sample size of $n=100$, please construct a $95\%$ confidence interval for $\mu$, the population mean lead contamination in all trout in the Olentangy River basin in the following ways:
+
+(i) Using formula to construct a $95\%$ confidence interval for $\mu$. You can use R to find the sample mean or sample standard deviation. Here do not use the ZTest() or t.test().
+
+(ii) Use ZTest() or t.test() to verify your answer and display the output.
+
+### b) 
+
+Please interpret the confidence interval found in part (a). Explain in both statistical and scientific terms.   
+
+### c) 
+
+Suppose the population standard deviation is unknown and the sample of $n=100$ trout observations comes from a normal distribution. Please construct a $95\%$ confidence interval for $\mu$, the population mean lead contamination in all trout in the Olentangy River basin in the following ways:
+
+
+(i) Using formula to construct a $95\%$ confidence interval for $\mu$. You can use R to find the sample mean or sample standard deviation. Here do not use the ZTest() or t.test().
+
+(ii) Use ZTest() or t.test() to verify your answer and display the output.
+
+
+
+
+\vspace{2cm}
+
+**Your answers go here for question 1**
+
+**part a**
+
+```{r}
+library(readr)
+Trout <- read_csv("Trout.csv")
+
+sample_mean <- mean(Trout$lead)
+sample_sd <- sd(Trout$lead)
+
+sigma <- 0.5
+n <- 100
+confidence_level <- 0.95
+
+z_score <- qnorm((1 + confidence_level) / 2)
+MOE <- z_score * (sigma / sqrt(n))
+
+sample_mean - MOE
+sample_mean + MOE
+
+
+library(DescTools)
+ZTest(Trout$lead, sd_pop = sigma, n = n, conf.level = confidence_level)
+```
+
+**part b**
+
+Seeing as both methods match we can say that we are 95% confident that the true value of $\mu$ is between [0.8826316,1.078628]. That is to say 95% of the time the true mean will be contained in the interval from this method, including this time.
+
+**part c**
+
+```{r}
+sample_mean <- mean(Trout$lead)
+sample_sd <- sd(Trout$lead)
+
+n <- 100
+confidence_level <- 0.95
+
+t_score <- qt(confidence_level,n-1)
+MOE <- t_score * (sample_sd / sqrt(n))
+
+sample_mean - MOE
+sample_mean + MOE
+
+
+library(DescTools)
+t.test(Trout$lead, conf.level = confidence_level)
+```
+
+## **Question 2**
+
+### a) 
+
+Show (or argue technically) that the $100(1-\alpha)\%$ confidence interval for population mean $\mu$ $$\bar{x}-z_{1-\alpha_{/2}}\frac{\sigma} {\sqrt{n}}\le\mu\le\bar{x}+z_{1-\alpha_{/2}}\frac{\sigma} {\sqrt{n}}$$
+is shorter than $$\bar{x}-z_{1-\alpha_{/3}}\frac{\sigma} {\sqrt{n}}\le\mu\le\bar{x}+z_{1-\alpha_{/3}}\frac{\sigma} {\sqrt{n}}$$
+
+Here, $z_{1-\alpha_{/2}}$ is the $(1-\alpha_{/2})$ percentile of a standard normal distribution and $\alpha$ is significant level.
+
+### b) 
+
+Suppose we have a sample of size $n$ from a population with known standard deviation $\sigma$. We build a $(1-\alpha)$% confidence interval for $\mu$. How would this interval chance under the following circumstances? Explain how or why the change would take place. 
+
+- We collect more data ($n$ increases), but everything else stays the same. 
+
+- We increase the significance level $\alpha$, but everything else stays the same.  
+
+- The population standard deviation $\sigma$ were larger, but everything else stays the same.  
+
+- The population mean $\mu$ were larger, but everything else stays the same. 
+
+
+
+
+\vspace{1cm}
+
+**Your answers go here for question 2**
+
+**part a**
+
+We need to compare \(z_{1-\frac{\alpha}{2}}\) to \(z_{1-\frac{\alpha}{3}}\) because that is the only point of difference in the two intervals. From here we can logically see that because \(\frac{\alpha}{2} > \frac{\alpha}{3}\), \(1- \frac{\alpha}{2} < 1- \frac{\alpha}{3}\). Therefore the interval based on \(1- \frac{\alpha}{3}\) will be mathematically larger.
+
+**part b**
+
+- We collect more data ($n$ increases), but everything else stays the same.
+  
+  This would decrease the standard error \(\frac{\sigma}{\sqrt{n}}\), which in turn decreases the interval width, and then a narrower confidence interval.
+
+- We increase the significance level $\alpha$, but everything else stays the same.
+  
+  This would increase the Z score \(Z_{1- \frac{\alpha}{2}}\), this results in a wider confidence interval by a similar analysis to what we did in part a, the wider interval would decrease our confidence in the answer as the CI percentage would be larger.
+
+- The population standard deviation $\sigma$ were larger, but everything else stays the same.
+  
+  This would increase the standard error \(\frac{\sigma}{\sqrt{n}}\), which then increases the confidence interval, which decreases our confidence in the answer.
+
+- The population mean $\mu$ were larger, but everything else stays the same.
+  
+  Changing \(\mu\) would not directly affect the confidence interval as it is calculated based on \(\bar{x}\), \(\sigma\), and \(n\). The confidence interval would no longer be accurate to the new \(\mu\).

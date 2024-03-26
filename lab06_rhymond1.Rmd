@@ -1,0 +1,211 @@
+---
+title: "lab06_rhymond.1"
+author: "rhymond.1"
+date: "2024-03-04"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NULL,
+  fig.width = 5,
+  fig.height = 4,
+  set.seed(3202)
+)
+
+```
+
+**Problem 1**
+
+**part a**
+
+**(i)**
+
+$X \sim N(\mu, \frac{\sigma^2}{n})$
+
+**(ii)**
+
+E(X) = $\mu$, SD(X) = $\frac{\sigma}{\sqrt{n}}$
+
+**part b**
+
+**(i)**
+```{r}
+set.seed(3202)
+NMC = 10000
+n = 36
+mu = 20
+sigma = 3
+xbar_MC = function(n, mu, sigma) {
+  x = rnorm(n, mean = mu, sd = sigma)
+  xbar = mean(x)
+}
+hist(replicate(NMC, xbar_MC(n, mu, sigma)),
+     main = "Sampling distribution of sample mean",
+     xlab = "Sample mean")
+abline(v = 20, col = "red") # centered at mean
+```
+
+**(ii)**
+
+Done
+
+**(iii)**
+```{r}
+#let's take 20.5 as a value for sample mean
+interval = c(20.5 - 0.96, 20.5 + 0.96)
+print(interval)
+```
+
+**(iv)**
+```{r}
+#Find the quantile using qnorm()
+qnorm((1 - 0.9) / 2)
+```
+
+**part c**
+```{r}
+n = 9
+mu = 40
+sigma = 6
+xbar_MC = function(n, mu, sigma) {
+  x = rnorm(n, mean = mu, sd = sigma)
+  z = (mean(x) - mu) / (sigma / sqrt(n))
+}
+hist(replicate(NMC, xbar_MC(n, mu, sigma)),
+     main = "Sampling distribution",
+     xlab = "(Sample mean-mean)/(sigma/sqrt(n))")
+```
+
+```{r}
+(mean = mean(replicate(NMC, xbar_MC(n, mu, sigma))))
+(variance = var(replicate(NMC, xbar_MC(n, mu, sigma))))
+```
+
+
+
+**Problem 2**
+
+**part a**
+
+For a sufficiently large n, if you take n samples of a distribution, the n sample means will form a normal distribution centered approximately at the true mean.
+
+**part b**
+
+It will be a normal distribution if n is sufficiently large as the problem states.
+
+**part c**
+
+```{r}
+n = 40
+lambda = 8
+xbar_MC = function(n, lambda) {
+  x = rchisq(n, lambda)
+  xbar = mean(x)
+}
+hist(replicate(NMC, xbar_MC(n, lambda)),
+     main = "Sampling distribution",
+     xlab = "Sample Mean")
+```
+
+It appears aproximately normal
+
+**part d**
+
+```{r}
+n = 4
+lambda = 8
+xbar_MC = function(n, lambda) {
+  x = rchisq(n, lambda)
+  xbar = mean(x)
+}
+hist(replicate(NMC, xbar_MC(n, lambda)),
+     main = "Sampling distribution",
+     xlab = "Sample Mean")
+```
+
+It does not appear normal as n is not large enough.
+
+**part e**
+
+Because the central limit theorem needs a sufficently large n, typically at least 30, to hold true.
+
+**part f**
+
+```{r}
+n = 40
+lambda = 8
+xbar_MC = function(n, lambda) {
+  x = rchisq(n, lambda)
+  z = (mean(x) - lambda) / (4 / sqrt(n))
+}
+hist(replicate(NMC, xbar_MC(n, lambda)),
+     main = "Sampling distribution",
+     xlab = "(Sample mean-lambda)/(4/sqrt(n))")
+```
+
+Yes it appears approximately normal.
+
+```{r}
+(mean = mean(replicate(NMC, xbar_MC(n, lambda))))
+(variance = var(replicate(NMC, xbar_MC(n, lambda))))
+```
+
+**Problem 3**
+
+**part a**
+
+\[S = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(X_i-\bar{X})^2}\]
+
+**part b**
+
+```{r}
+n = 4
+mu = 40
+sigma = 6
+xbar_MC = function(n, mu, sigma) {
+  x = rnorm(n, mean = mu, sd = sigma)
+  s = sqrt((1/(n-1)) * sum((x - mean(x))^2))
+  z = (mean(x) - mu) / (s / sqrt(n))
+}
+hist(replicate(NMC, xbar_MC(n, mu, sigma)),
+     main = "Sampling distribution",
+     xlab = "(Sample mean-mean)/(S/sqrt(n))")
+```
+
+Yes it appears that it is bell-shaped, unimoal, and with larger tails.
+
+**part c**
+
+```{r}
+n = 20
+mu = 40
+sigma = 6
+xbar_MC = function(n, mu, sigma) {
+  x = rnorm(n, mean = mu, sd = sigma)
+  s = sqrt((1/(n-1)) * sum((x - mean(x))^2))
+  z = (mean(x) - mu) / (s / sqrt(n))
+}
+hist(replicate(NMC, xbar_MC(n, mu, sigma)),
+     main = "Sampling distribution",
+     xlab = "(Sample mean-mean)/(S/sqrt(n))")
+```
+
+This appears more normal.
+
+```{r}
+n = 30
+mu = 40
+sigma = 6
+xbar_MC = function(n, mu, sigma) {
+  x = rnorm(n, mean = mu, sd = sigma)
+  s = sqrt((1/(n-1)) * sum((x - mean(x))^2))
+  z = (mean(x) - mu) / (s / sqrt(n))
+}
+hist(replicate(NMC, xbar_MC(n, mu, sigma)),
+     main = "Sampling distribution",
+     xlab = "(Sample mean-mean)/(S/sqrt(n))")
+```
+
+This appears even more normal.

@@ -1,0 +1,114 @@
+---
+title: "lab04_rhymond.1"
+author: "rhymond.1"
+date: "2024-02-12"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NULL,
+  fig.width = 5,
+  fig.height = 4,
+  set.seed(3202)
+)
+
+```
+
+**Problem 1**
+
+**Part a**
+
+An unbiased estimator is said to be consistent if the difference between the estimator and the population parameter decreases as the sample size increases. We can take the limit of this difference as it approaches infinity to see if it is 0.
+
+**Part b**
+
+```{r}
+NMC <- 1000
+lambda <- 3
+x_storage <- c()
+lambda_hat_storage <- c()
+for (i in 1:NMC) {
+  x_storage[i] <- rexp(1, lambda)
+  lambda_hat_storage[i] <- 1 / mean(x_storage[1:i])
+}
+plot(lambda_hat_storage,
+     type = "l",
+     ylab = "Reciprocal of the Sample Mean",
+     main = "Consistent Estimator of\nExponential Parameter")
+abline(h = lambda, col = "red")
+```
+
+As we can see the difference between the sample mean and the variance becomes negligible as the sample size increases.
+
+**Problem 2**
+
+```{r}
+NMC <- 1e4
+lambda <- 3
+x_storage <- c()
+lambda_hat_storage <- c()
+lambda_hat_storage2 <- c()
+for (i in 1:NMC) {
+  x_storage[i] <- rpois(1, lambda)
+  lambda_hat_storage[i] <- mean(x_storage[1:i])
+  lambda_hat_storage2[i] <- var(x_storage[1:i])
+}
+plot(lambda_hat_storage, type = "l",
+     ylab = "Sample Mean and Sample Variance",
+     main = "Consistent Estimator of \nPoisson Paramater")
+abline(h=lambda, col = "red")
+lines(lambda_hat_storage2, col = 'blue')
+legend('topleft', legend = c('Sample Mean', 'Sample Variance'), lty = c(1,1), col = c('black' , 'blue'), cex = .5)
+```
+
+
+**Problem 3**
+
+```{r}
+NMC <- 1e4
+k = 5
+x_storage <- c()
+x_bar_storage <- c()
+s_2_storage <- c()
+for (i in 1:NMC) {
+  x_storage[i] <- rchisq(1, k)
+  x_bar_storage[i] <- mean(x_storage[1:i])
+  s_2_storage[i] <- var(x_storage[1:i])
+}
+plot(x_bar_storage,
+     type = "l",
+     ylab = "Esimated Mean Values",
+     xlab = "Sample Size of Mean",
+     main = "Consistent Estimator of E(X)")
+abline(h = k, col = "red")
+
+plot(s_2_storage,
+     type = "l",
+     ylab = "Esimated Var Values",
+     xlab = "Sample Size of Var",
+     main = "Consistent Estimator of V(X)")
+abline(h = 2*k, col = "blue")
+```
+
+
+**Problem 4**
+
+For this sample we will set theta = 1 to allow the code to compile
+```{r}
+NMC <- 1e4
+theta <- 15
+max_storage <- c()
+for (i in 1:NMC) {
+  max_storage[i] <- max(runif(i, 0, theta))
+}
+plot(max_storage,
+     type = "l",
+     ylab = "Esimated Max Values",
+     xlab = "Sample Size of Max",
+     main = "Consistent Estimator of Theta",
+     ylim = c(0, theta+10))
+abline(h = theta, col = "red")
+```
+

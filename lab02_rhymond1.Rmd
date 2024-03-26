@@ -1,0 +1,185 @@
+---
+title: "lab2_rhymond1"
+author: "rhymond.1"
+date: "2024-01-22"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NULL,
+  fig.width = 5,
+  fig.height = 4
+)
+```
+
+**Problem 1**
+
+**a**
+```{r}
+set.seed(320224)
+alpha <- 2
+beta <- 0.5
+n <- 4
+NMC <- 1e4
+xbar_storage <- c()
+
+# Use NMC=1e4
+# How does the shape look like compared to normal distribution?
+for (i in 1:NMC) {
+  xbar_storage[i] <- mean(rbeta(n = n, shape1 = alpha, shape2 = beta))
+}
+hist(xbar_storage, main = "Sampling Distribution of Sample Means", 
+     xlab = "Sample Means", col = "pale green", breaks = 30)
+```
+
+The shape seems to be skewed from a normal distribution. The sample size will need to be larger for the central limit theorem to take effect. n = 4 is for each individual trial and NMC is how many times you repeat for the total sample.
+
+
+**b**
+```{r}
+NMC <- 5e4
+xbar_storage <- c()
+for (i in 1:NMC) {
+  xbar_storage[i] <- mean(rbeta(n = n, shape1 = alpha, shape2 = beta))
+}
+hist(xbar_storage, main = "Sampling Distribution of Sample Means", 
+     xlab = "Sample Means", col = "pale green", breaks = 30)
+```
+
+It is slightly closer but still skewed, we will need a larger sample.
+
+**c**
+```{r}
+NMC <- 1e4
+n <- 80
+xbar_storage <- c()
+for (i in 1:NMC) {
+  xbar_storage[i] <- mean(rbeta(n = n, shape1 = alpha, shape2 = beta))
+}
+hist(xbar_storage, main = "Sampling Distribution of Sample Means", 
+     xlab = "Sample Means", col = "pale green", breaks = 30)
+```
+
+It appears to be approximately normal. This is probably because each trial has a larger sample which helps get a more normal result.
+
+**d**
+```{r}
+mu = alpha / (beta + alpha)
+mu
+mean(xbar_storage)
+Sigma2 = (alpha * beta) / ((alpha + beta) ^ 2 * (alpha + beta + 1))
+Sigma2
+n = 80
+Sigma2 / n
+var(xbar_storage)
+```
+
+It appears to be approaching a normal distribution. With mu as 0.8 and sigma^2 as 0.0005.
+
+**e**
+```{r}
+cauchy_clt = function(n) {
+  xbar_cauchy = mean(rcauchy(n))
+  return(xbar_cauchy)
+}
+
+NMC=10000
+xbars = replicate(NMC, cauchy_clt(50))
+hist(xbars, main = "Sampling Distribution of Sample Means", 
+     xlab = "Sample Means", col = "pale green", breaks = 30)
+```
+
+The cauchy distribution is known for having heavy tails. This makes it an exception to the Central Limit Theorem.
+
+**Problem 2**
+
+**a**
+```{r}
+lambda <- 17
+NMC <- 5000
+p_storage <- rpois(NMC, lambda)
+barplot(table(p_storage), main = "Barplot of Poisson(17) Random Variables",
+        xlab = "Poisson Random Variable", ylab = "Frequency")
+```
+
+It looks aproximately like a normal distribution centered at 17, which is what we would exect based on the law of large numbers.
+
+**b**
+```{r}
+mean(p_storage)
+var(p_storage)
+```
+
+While both are not exactly 17, the mean is closer with 16.923.
+
+**c**
+
+You could make the choice based on how the sample looks, such as if it appears to be centered around a certain value with no outliers, then the mean would be a safe bet.
+
+**Problem 3**
+
+**a**
+```{r}
+E_X <- 6 + 2*5 - 3*(1/10)
+
+print(paste("E(X):", E_X))
+
+Var_X <- 2^2 + (2^2)*(2*5) - (3^2)*(1/10^2)
+
+print(paste("V(X):", Var_X))
+```
+
+Because X = A+2B-3C, we know the expectation of X should be E(A) + 2E(B) - 3(C). Similarly for variance we know the variance of X should be V(A) + 2^2V(B) - 3^2V(C), we ignore the covariance as all of the variables are independent as stated. We can use the characteristics of Normal, Chi-Squared, and Exponential distributions.
+
+**b**
+```{r}
+n = 5000
+a <- c()
+b <- c()
+c <- c()
+x <- c()
+for (i in 1:n) {
+  A <- rnorm(n, 6, 2)
+
+  B <- rchisq(n, 5)
+
+  C <- rexp(n, 10)
+
+  X <- A+2*B-3*C
+}
+
+X_Mean <- mean(X)
+print(paste("Mean:", X_Mean))
+
+X_Var <- var(X)
+print(paste("Variance:", X_Var))
+
+```
+
+Both the sample mean and variance are relatively close to their true values. The mean is closer to its true value than the variance to its true value.
+
+**c**
+```{r}
+P_A_3.5 <- 1 - pnorm(3.5, mean = 6, sd = 2)
+print(paste("Probability:", P_A_3.5))
+```
+
+The probability is about 0.89. pnorm gives us the values below 3.5 so we do 1-pnorm to get the values above 3.5
+
+**d**
+```{r}
+Sample_P_A_3.5 <- mean(A > 3.5)
+print(paste("Sample probability:", Sample_P_A_3.5))
+```
+
+The sample probability is about 0.89. These are approximately the same. Not exactly as while the sample may get close it will not be exactly the same.
+
+**e**
+```{r}
+P_X_10 <- mean(X < 10)
+print(paste("Percentage:", P_X_10))
+```
+
+The percentage is about 0.18. 

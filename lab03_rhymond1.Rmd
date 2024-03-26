@@ -1,0 +1,82 @@
+---
+title: "lab03_rhymond.1"
+author: "rhymond.1"
+date: "2024-01-29"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = NULL,
+  fig.width = 5,
+  fig.height = 4,
+  set.seed(3202)
+)
+
+```
+
+
+**Problem 1**
+```{r}
+sampler <- function(n) {
+  samples <- runif(n, 0, 1)
+  theta_hat <- max(samples)
+  return(theta_hat)
+}
+ns <- seq(2, 500, length = 40)
+results <- replicate(10000, unlist(lapply(ns, sampler)))
+## could also use replicate(10000, sapply(ns, sampler))
+mean_results <- apply(results, 1, mean)
+true_theta <- 1
+percent_error <- abs(mean_results - true_theta) / true_theta
+plot(ns,
+     percent_error,
+     type = "l",
+     ylab = "Percent Error",
+     xlab = "Sample Size")
+```
+
+As you may logically expect, a larger sample size leads to a lower percent error. By sample size 500 the bias, while nonzero, seems negligible. This makes it asymptotically biased.
+
+**Problem 2**
+```{r}
+sampler <- function(n) {
+  x <- runif(n,0,1)
+  M <- max(x)
+  return(M)
+}
+ns <- seq(2, 500, length = 40)
+results <- replicate(10000, unlist(lapply(ns, sampler)))
+## could also use replicate(10000, sapply(ns, sampler))
+mean_results <- apply(results, 1, mean)
+percent_error <- abs(mean_results - 25) / 25
+plot(ns,
+     percent_error,
+     type = "l",
+     ylab = "Percent Error",
+     xlab = "Sample Size")
+```
+
+There is still a clear bias, but it does decrease as the sample gets larger. Though even at 500 samples it is still significant at approximately 96%.
+
+**Problem 3**
+```{r}
+sampler <- function(n) {
+  x <- runif(n,0,1)
+  xbar2 <- 2*mean(x)
+  return(xbar2)
+}
+ns <- seq(2, 500, length = 40)
+results <- replicate(10000, unlist(lapply(ns, sampler)))
+## could also use replicate(10000, sapply(ns, sampler))
+mean_results <- apply(results, 1, mean)
+percent_error <- abs(mean_results - 1) / 1
+plot(ns,
+     percent_error,
+     type = "l",
+     ylab = "Percent Error",
+     xlab = "Sample Size")
+```
+
+As the problem states the bias decreases as n increases, but the scale is so low that in all cases the bias is negligible. As stated in class the bias is essentially 0.

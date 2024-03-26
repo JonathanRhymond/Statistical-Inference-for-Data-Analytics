@@ -1,0 +1,34 @@
+---
+title: "Lab 01"
+author: "rhymond.1"
+date: "2024-01-08"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DescTools)
+```
+
+I am Jonathan Rhymond, a sophmore from Lewis Center, Ohio (about 20 minutes north of OSU). My major is data analytics. I've taken an Intro to Python Class, Software I & II, Foundations I, and Statistics 3201. 
+
+# Problem 5
+```{r}
+even <- seq(2, 20, by = 2)
+
+sample <- rnorm(14, 8.8, 1.04)
+hist(sample)
+```
+
+# Problem 6
+1. $\frac{\alpha}{2}$
+2. $x_i$
+3. $e^{2x-3}+6$
+4. $\bar{x}=\frac{x_1+x_2+...+x_n}{n}=\frac{1}{n}\sum_{i=1}^nx_i$
+
+# Problem 7
+```{r}
+ZTest(c(3.3, 3.5, 3.8, 2.9, 3.1), mu=3, sd_pop=0.7, conf.level=.95)
+7
+```
+

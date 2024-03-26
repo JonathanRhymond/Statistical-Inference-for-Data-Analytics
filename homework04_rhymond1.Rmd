@@ -1,0 +1,206 @@
+---
+title: "Stat 3202: Homework 4"
+date: "Due Thursday, February 22 by 11:59 pm"
+author: "Jonathan Rhymond (rhymond.1)"
+output: pdf_document
+---
+
+\
+
+
+
+\large
+\
+
+#### Instructions
+- Replace "FirstName LastName (name.n)" above with your information.
+- Provide your solutions below in the spaces marked "Solution:".
+- Include any R code that you use to answer the questions; if a numeric answer is required, show how you calculated it in R.
+- Knit this document to **pdf** and upload both the **pdf** file and your completed **Rmd** file to Carmen
+- Make sure your solutions are clean and easy-to-read by
+    - formatting all plots to be appropriately sized, with appropriate axis labels.
+    - only including R code that is necessary to answer the questions below.
+    - only including R output that is necessary to answer the questions below (avoiding lengthy output).
+    - providing short written answers explaining your work, and writing in complete sentences.
+
+
+Due on Carmen Thursday, February 22 by 11:59 pm. All uploads must be .pdf.
+Submissions will be accepted for 24 hours past this deadline, with a deduction of 1%
+per hour. Absolutely no submissions will be accepted after this grace period.
+\
+
+**Concepts \& Application**
+
+In this assignment, you will
+
+* find sufficient statistics of several probability distributions.
+* Finding Method of Moment (MOM) estimators.
+* Finding Maximum likelihood estimators (MLE).
+
+
+This homework is worth 40 points. 
+
+
+
+
+
+\newpage
+
+
+**Question 1**
+
+
+
+(a) Consider a sample $x_1,x_2,\cdots,x_n\stackrel{\mathrm{iid}}{\sim}Unif(\theta, \theta+1)$. Show that $\hat{\theta}_{MOM}=\bar{x}-\frac{1}{2}$. You may use known facts about $E(X)$.
+(b)	Prove that $\hat{\theta}_{MOM}$ is consistent estimator for $\theta$. You may use known facts about $E(X),E(\bar{X}),V(X),V(\bar{X})$.
+
+\
+
+**Solution to Question 1**
+
+Your answers go here.
+
+**Part a:**
+
+For a uniform distribution E(X) = $\frac{\theta + (\theta + 1)}{2}$ = $\theta + \frac{1}{2}$. We know that the sample mean $\bar{X}$ is an unbiased estimator of $\theta + \frac{1}{2}$. Therefore, to find $\hat{\theta}_{\text{MOM}}$, we set $\bar{X}$ equal to $\theta + \frac{1}{2}$ and solve for $\theta$:
+$\bar{X} = \theta + \frac{1}{2}$
+
+$\hat{\theta}_{\text{MOM}} = \bar{X} - \frac{1}{2}$
+
+**Part b:**
+
+We know that $E(\bar{X}) = \theta + \frac{1}{2}$ and $V(\bar{X}) = \frac{1}{12n}$ from the properties of the uniform distribution.
+
+The estimator is unbiased:
+
+\[ E(\hat{\theta}_{\text{MOM}}) = E(\bar{X} - \frac{1}{2}) = E(\bar{X}) - \frac{1}{2} \quad \text{(by linearity of expectation)} = \theta + \frac{1}{2} - \frac{1}{2} \quad \text{(since $E(\bar{X}) = \theta + \frac{1}{2}$)} = \theta \]
+
+The limit of var as it approaches infinity is 0:
+
+Remembering that \[ V(\hat{\theta}_{\text{MOM}}) = V(\bar{X}) = \frac{1}{12n} \]
+
+As $n \rightarrow \infty$, $V(\hat{\theta}_{\text{MOM}})$ approaches $0$.
+
+
+\vspace{1cm}
+
+**Question 2**
+
+
+(a) Let $x_1,x_2,\cdots,x_n\stackrel{\mathrm{iid}}{\sim}Gamma(\alpha, \beta)$ where **$\beta$ is known with $\beta=2$**. Show that $\sum_{1=1}^{n}ln(x_i)$ is sufficient for $\alpha$.
+(b) Let $x_1,x_2,\cdots,x_n\stackrel{\mathrm{iid}}{\sim}\chi^2_k$. Show that $\sum_{1=1}^{n}ln(x_i)$ is sufficient for $k$.
+(c) Let $x_1,x_2,\cdots,x_n\stackrel{\mathrm{iid}}{\sim}N(\mu, \sigma^2)$ where **$\mu$ is known with $\mu$=1**. Show that $\sum_{1=1}^{n}(x_i-\mu)^2$ is sufficient for $\sigma^2$.
+
+
+
+\
+
+**Solution to Question 2**
+
+Your answers go here.
+
+**Part a:**
+
+$\prod_{i=1}^{n}f(x_i,2;\alpha)$ = $\prod_{i=1}^{n}\frac{2^\alpha}{\Gamma(\alpha)} x_i^{\alpha - 1} e^{-2 x_i}$ = $(\frac{2^\alpha}{\Gamma(\alpha)})^n(\prod_{i=1}^{n}x_i^{\alpha-1})(e^{-2\sum_{i=1}^{n}x_i})$ = $(\frac{2^\alpha}{\Gamma(\alpha)})^n(\prod_{i=1}^{n}e^{x_i(\alpha-1)})(e^{-2\sum_{i=1}^{n}x_i})$ = $(\frac{2^\alpha}{\Gamma(\alpha)})^n(e^{(\alpha-1)\sum_{i=1}^{n}x_i})(e^{-2\sum_{i=1}^{n}x_i})$
+
+If we break up the first two terms into g and the last term in h, we can see the $\sum_{i=1}^{n}x_i$ and therefore it is sufficient.
+
+**Part b:**
+
+$\prod_{i=1}^{n} f(x_i,k)$ = $\prod_{i=1}^{n} \frac{1}{2^{k/2}\Gamma(k/2)} x_i^{\frac{k}{2} - 1} e^{-\frac{x_i}{2}}$ = $\left( \frac{1}{2^{k/2}\Gamma(k/2)} \right)^n \left( \prod_{i=1}^{n} x_i^{\frac{k}{2} - 1} \right) \left( e^{-\frac{\sum_{i=1}^{n}x_i}{2}} \right)$ = $( \frac{1}{2^{k/2}\Gamma(k/2)})^n e^{( \frac{k}{2} - 1) \sum_{i=1}^{n} \ln(x_i)} e^{-\frac{\sum_{i=1}^{n}x_i}{2}}$
+
+If we break down the last two terms as h and the first as g. We can see it is sufficient.
+
+**Part c:**
+
+\( \prod_{i=1}^{n} f(x_i;\mu, \sigma^2) = \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x_i - 1)^2}{2\sigma^2}} \) = \( \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^n e^{-\frac{\sum_{i=1}^{n}(x_i - 1)^2}{2\sigma^2}} \)
+
+If we make the first part g and the second part h, we can see that it is sufficient.
+
+
+\vspace{1cm}
+
+\newpage
+
+**Question 3**
+
+
+Take an iid sample of size $n$ from exponential distribution, $Exp(\lambda)$ with the pdf, $f(x;\lambda)=\lambda e^{-\lambda x}$. We know in this context that $E(x)=\frac{1}{\lambda}$  . 
+
+a) Show the sum of the observations is sufficient for $\lambda$.
+b) Compute a method of moments estimator for $\lambda$. You can use known facts about $Exp(\lambda)$.
+c) Compute a maximum likelihood estimator for $\lambda$.
+
+\
+
+**Solution to Question 3**
+
+Your answers go here.
+
+**Part a:**
+
+\(\prod_{i=1}^{n}f(x_1;\lambda)\) = \(\lambda e^{-\lambda x_i}\) = \(\lambda^{n}e^{-\lambda \sum_{i=1}^{n}}\)
+
+If we break up the term with the first part as g and the second part as h, we can see it is sufficient.
+
+**Part b:**
+
+The method of moments estimator can be gotten by \(m_k = \frac{1}{n}\sum_{i=1}^{k}y_i^k\), This is also equal to \(\bar{x}\). Since the distribution is unbiased \(\bar{x}\) equals \(E(X)\). So \(\hat{\lambda}_{MOM}\) = \(\frac{1}{x}\).
+
+**Part c:**
+
+We have the likelihood from part a: \(\lambda^{n}e^{-\lambda \sum_{i=1}^{n}}\).
+
+We then get the log-likelihood as: \(n log(\lambda) - \lambda \sum_{i=1}^{n}x_i\)
+
+Taking the derivative we get: \(\frac{n}{\lambda} - \sum_{i=1}^{n}x_i\)
+
+Set it equal to 0: \(\hat{\lambda} = \frac{1}{\bar{x}}\)
+
+Checking that the second derivative is greater than 0: \(\frac{-n}{(\frac{1}{\bar{x}})^2}\)
+
+So the final answer is: \[\hat{\lambda} = \frac{1}{\bar{x}}\]
+
+
+\vspace{1cm}
+
+**Question 4**
+
+
+a) Let $x_1,x_2,\cdots,x_n\stackrel{\mathrm{iid}}{\sim}\text{Laplace}(\mu=0, \sigma)$ where $f(x\mid \mu=0, \sigma)=\frac{1}{2\sigma}e^{-\frac{|x|}{\sigma}}$. Compute $\hat{\sigma}_{MLE}$.
+b) Let $x_1,x_2,\cdots,x_n\stackrel{\mathrm{iid}}{\sim}\text{Bernoulli}(p)$. Compute $\hat{p}_{MLE}$.
+c) Consider a sample $x_1,x_2,\cdots,x_n\stackrel{\mathrm{iid}}{\sim}Unif(\theta-1, \theta+1)$. Find maximum likelihood estimator for $\theta$, $\hat{\theta}_{MLE}$.
+
+\
+
+**Solution to Question 4**
+
+Your answers go here.
+
+**Part a:**
+
+\(\prod_{i=1}^{n}\frac{1}{2\sigma}e^{-\frac{|x|}{\sigma}}\)
+
+\(log(\prod_{i=1}^{n}\frac{1}{2\sigma}e^{-\frac{|x|}{\sigma}})\) = \(\sum_{i=1}^{n}-log(2\sigma)-\frac{|x|}{\sigma}\)
+
+\(\sum_{i=1}^{n}-log(2\sigma)-\frac{|x|}{\sigma}\) = 0
+
+\( \sum_{i=1}^{n} \frac{|x_i|}{\sigma^2} = \sum_{i=1}^{n} \frac{|x_i|}{\hat{\sigma}_{\text{MLE}}^2} = \frac{n}{\hat{\sigma}_{\text{MLE}}} \)
+
+\( \hat{\sigma}_{\text{MLE}} = \frac{1}{n} \sum_{i=1}^{n} |x_i| \)
+
+**Part b:**
+
+\( L(p) = \prod_{i=1}^{n} p^{x_i} (1-p)^{1-x_i} \)
+
+\( log(L(p)) = log(\prod_{i=1}^{n} p^{x_i} (1-p)^{1-x_i}) = 0 \)
+
+\[ \hat{p}_{\text{MLE}} = \frac{\sum_{i=1}^{n} x_i}{n} \]
+
+**Part c:**
+
+\( L(\theta) = \prod_{i=1}^{n} \frac{1}{2} \)
+
+\( log(L(\theta)) = log(\prod_{i=1}^{n} \frac{1}{2}) \)
+
+The MLE doesn't rely on \(\theta\) so it can be any value within \(\theta-1\) and \(\theta+1\)
